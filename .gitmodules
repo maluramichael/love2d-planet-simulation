@@ -1,0 +1,12 @@
+[submodule "thirdparty/hump"]
+	path = thirdparty/hump
+	url = git@github.com:vrld/hump.git
+[submodule "thirdparty/classic"]
+	path = thirdparty/classic
+	url = git@github.com:rxi/classic.git
+[submodule "thirdparty/lurker"]
+	path = thirdparty/lurker
+	url = git@github.com:maluramichael/lurker.git
+[submodule "thirdparty/lume"]
+	path = thirdparty/lume
+	url = git@github.com:rxi/lume.git
