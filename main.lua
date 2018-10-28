@@ -31,7 +31,6 @@ function Body:draw()
   love.graphics.setShader()
   love.graphics.setColor(1, 1, 1)
   love.graphics.circle("line", self.location.x, self.location.y, self.radius)
-  -- love.graphics.print(string.format("%d", self.mass), self.location.x, self.location.y)
   love.graphics.pop()
 end
 
@@ -51,7 +50,7 @@ function Body:update(dt)
       collision.destroyed = true
       self.mass = self.mass + collision.mass
       self.velocity = self.velocity * 0.8
-      self.radius = self.radius + 5
+      self.radius = self.radius + collision.radius * 0.1
     else
       self.destroyed = true
       collision.mass = collision.mass + self.mass
@@ -101,12 +100,19 @@ function force(a, b)
   return G * a.mass * b.mass / distanceSquared(a, b)
 end
 
-function love.load()
-  math.randomseed(os.time())
+function generateBodies()
+  bodies = {}
   local w, h = love.graphics.getDimensions()
   for i = 1, 10 do
     table.insert(bodies, Planet(vector.new(love.math.random(0, w), love.math.random(0, h)), 50, 10.0e6))
   end
+end
+
+function love.load()
+  math.randomseed(os.time())
+
+  generateBodies()
+
   local pixelcode =
     [[
   extern number t;
@@ -154,12 +160,14 @@ function love.draw()
   if drag.active then
     local f = (drag.to - drag.from):len()
 
-    love.graphics.print(string.format("%d %d %d %d", drag.from.x, drag.from.y, drag.to.x, drag.to.y))
+    love.graphics.print(string.format("%d %d %d %d", drag.from.x, drag.from.y, drag.to.x, drag.to.y), 0, 50)
 
     love.graphics.setLineWidth(3 + f * 0.05)
     love.graphics.line(drag.from.x, drag.from.y, drag.to.x, drag.to.y)
   end
   love.graphics.pop()
+
+  love.graphics.print("Press R to reset planets\nPress ESC to quit\nClick, drag and release to launch an asteroid")
 end
 
 function spawnAsteroid(from, direction, strength)
@@ -240,6 +248,6 @@ function love.keypressed(key, scancode, isrepeat)
     love.event.quit()
   end
   if key == "r" then
-    love.event.quit("restart")
+    generateBodies()
   end
 end
